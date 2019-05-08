@@ -43,6 +43,7 @@ GOOGLE_APP_SECRET={google oauth secret}
 
 ### deploy
 ```bash
+sudo docker swarm init
 make deploy
 ```
 
