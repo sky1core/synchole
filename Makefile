@@ -1,7 +1,6 @@
 .PHONY: space deploy deploy_dev rm build app_key shell main_config update
 
 UNAME := $(shell uname)
-WHOAMI := $(shell whoami)
 
 ifeq ($(UNAME), Darwin)
 	DOCKER := docker
@@ -14,6 +13,7 @@ default: build
 .env:
 ifeq (,$(wildcard .env))
     $(shell cp .env.example .env)
+    $(shell sudo chown 1000:1000 .env)
 endif
 
 include .env
@@ -23,14 +23,14 @@ export $(shell sed 's/=.*//' .env)
 	sudo install -d /etc/synchole
 
 /etc/synchole/data: /etc/synchole
-	sudo install -d -o $(WHOAMI) -g $(WHOAMI) /etc/synchole/data
+	sudo install -d -o 1000 -g 1000 /etc/synchole/data
 
 /etc/synchole/acme.json: /etc/synchole
 	sudo touch /etc/synchole/acme.json
 	sudo chmod 600 /etc/synchole/acme.json
 
 /etc/synchole/portainer: /etc/synchole
-	sudo install -d -o $(WHOAMI) -g $(WHOAMI) /etc/synchole/portainer
+	sudo install -d -o 1000 -g 1000 /etc/synchole/portainer
 
 space: /etc/synchole/data /etc/synchole/acme.json /etc/synchole/portainer
 
