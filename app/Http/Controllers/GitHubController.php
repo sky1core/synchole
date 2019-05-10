@@ -36,7 +36,7 @@ class GitHubController extends Controller
             case 'installation':
             case 'installation_repositories':
             case 'integration_installation_repositories':
-                $this->integrationInstallationRepositories(Payload::make($content));
+                //$this->integrationInstallationRepositories(Payload::make($content));
                 break;
             default:
 
