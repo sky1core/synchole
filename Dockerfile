@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV APP_NAME synchole
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
     locales \
     software-properties-common
 
@@ -23,8 +23,9 @@ RUN add-apt-repository -y ppa:ondrej/php \
     && add-apt-repository -y ppa:nginx/stable
 
 ### Update sources
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
     docker.io \
+    cron \
     vim \
     bash-completion \
     unzip \
@@ -99,7 +100,8 @@ RUN composer install --no-dev \
 RUN mkdir -p /app/data
 
 
+
 EXPOSE 80 443
-VOLUME ["/app/synchole", "/app/data"]
+
 
 CMD ["/app/entrypoint.sh"]

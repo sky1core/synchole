@@ -7,10 +7,11 @@ storage/framework/sessions/*
 storage/framework/views/*
 storage/logs/*
 
+.git
 .env
 *.pem
-**.
 
+node_modules
 vendor
 
 Makefile

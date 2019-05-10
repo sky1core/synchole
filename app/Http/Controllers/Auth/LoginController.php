@@ -63,6 +63,8 @@ class LoginController extends Controller
             ($uri == '/') ? '' : $uri
         );
 
+        \Log::debug('auth/gate: '.$next);
+
         $user = auth()->user();
 
         if($user) {

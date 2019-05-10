@@ -2,32 +2,47 @@ version: '3.3'
 
 services:
   traefik:
-    image: traefik:1.7.11
+    image: traefik:1.7
     command:
+@if($LOG_LEVEL=='debug')
+      - "--loglevel=DEBUG"
+@endif
+      - "--defaultEntryPoints={{$PROTOCOLS}}"
       - "--api"
       - "--docker"
-      - "--docker.watch"
+      - "--docker.watch=true"
       - "--docker.domain={{$MAIN_DOMAIN}}"
       - "--docker.swarmMode=true"
+      - "--docker.exposedByDefault=false"
       - "--ping"
       - "--ping.entryPoint=http"
+@if($REDIRECT_TO_HTTPS)
       - "--entryPoints=Name:http Address::80 Redirect.EntryPoint:https"
+@else
+      - "--entryPoints=Name:http Address::80"
+@endif
+@if($USE_HTTPS)
       - "--entryPoints=Name:https Address::443 TLS"
       - "--acme"
+      - "--acme.acmeLogging=true"
       - "--acme.email={{$EMAIL}}"
       - "--acme.domains={{$MAIN_DOMAIN}}"
       - "--acme.storage=acme.json"
       - "--acme.entryPoint=https"
       - "--acme.onHostRule=true"
+      - "--acme.httpChallenge"
       - "--acme.httpChallenge.entryPoint=http"
-      - "--retry"
-@if($LOG_LEVEL=='debug')
-      - "--loglevel=DEBUG"
+@if($ACME_CA_SERVER)
+      - "--acme.caServer={{$ACME_CA_SERVER}}"
 @endif
+@endif
+      - "--retry"
+
     ports:
       - "80:80"
+@if($USE_HTTPS)
       - "443:443"
-
+@endif
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/synchole/acme.json:/acme.json
@@ -40,7 +55,7 @@ services:
         - traefik.docker.network=main_web
         - traefik.enable=true
         - traefik.protocol=http
-        - traefik.default.port=8080
+        - traefik.port=8080
         - traefik.frontend.entryPoints={{$PROTOCOLS}}
         - "traefik.frontend.rule=Host:traefik.{{$MAIN_DOMAIN}}"
         - traefik.backend=traefik
@@ -68,15 +83,16 @@ services:
       - /app/synchole/storage/framework/cache/data/
       - /app/synchole/storage/framework/views
 @endif
+      - ./.env:/app/synchole/.env
       - /etc/synchole/data:/app/data
-      - .env:/app/synchole/.env
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - web
     deploy:
       labels:
+        - traefik.docker.network=main_web
         - traefik.enable=true
-        - traefik.default.port=80
+        - traefik.port=80
         - traefik.protocol=http
         - traefik.frontend.entryPoints={{$PROTOCOLS}}
         - "traefik.frontend.rule=Host:{{$MAIN_DOMAIN}}"
@@ -106,8 +122,9 @@ services:
 
     deploy:
       labels:
+        - traefik.docker.network=main_web
         - traefik.enable=true
-        - traefik.default.port=9000
+        - traefik.port=9000
         - traefik.protocol=http
         - traefik.frontend.entryPoints={{$PROTOCOLS}}
         - "traefik.frontend.rule=Host:portainer.{{$MAIN_DOMAIN}}"

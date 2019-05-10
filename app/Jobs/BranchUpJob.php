@@ -129,7 +129,7 @@ class BranchUpJob implements ShouldQueue
 
                 $labels->set('traefik.enable', 'true');
                 $labels->set('traefik.docker.network', $domainNetwork);
-                $labels->set('traefik.default.port', $port);
+                $labels->set('traefik.port', $port);
                 $labels->set('traefik.protocol', 'http');
                 $labels->set('traefik.frontend.entryPoints', config('synchole.protocols'));
                 $labels->set('traefik.backend', $identifier);
