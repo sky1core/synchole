@@ -102,16 +102,18 @@ class BranchUpJob implements ShouldQueue
             $labels = new Labels($service['deploy']['labels']);
 
             $domainEnable = $labels->get('synchole.domain.enable');
-            $build = $labels->get('synchole.build');
+            $dockerfile = $labels->get('synchole.build') ?? $labels->get('synchole.build.file');
+            $buildContext = $labels->get('synchole.build.context', '.');
             $authGateEnable = $labels->get('synchole.auth.gate.enable');
 
-            if($build) {
+            if($dockerfile) {
                 $newImageName = $service['image'].':'.$this->branch;
                 $service['image'] = $newImageName;
                 $builds[] = [
                     'identifier' => $identifier,
                     'image_name' => $newImageName,
-                    'file' => $build,
+                    'file' => $dockerfile,
+                    'context' => $buildContext,
                 ];
             }
 
@@ -158,9 +160,10 @@ class BranchUpJob implements ShouldQueue
 
         foreach($builds as $build) {
             $image = $build['image_name'];
-            $file = $build['file'];
-            if(! $sh->try_docker('build', '-t', $image, '-f', $file, '.')->success) {
-                $sh->docker('build', '-t', $image, '-f', $file, '--no-cache', '.');
+            $file = path_join($build['context'], $build['file']);
+            $context = $build['context'];
+            if(! $sh->try_docker('build', '-t', $image, '-f', $file, $context)->success) {
+                $sh->docker('build', '-t', $image, '-f', $file, '--no-cache', $context);
             }
         }
 
