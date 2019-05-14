@@ -84,7 +84,7 @@ services:
       - /app/synchole/storage/framework/views
 @endif
       - ./.env:/app/synchole/.env
-      - /etc/synchole/data:/app/data
+      - /etc/synchole/data:/etc/synchole/data
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - web
@@ -115,7 +115,7 @@ services:
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/synchole/portainer:/app/data
+      - /etc/synchole/portainer:/data
 
     networks:
       - web

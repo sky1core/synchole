@@ -5,15 +5,16 @@ set -x
 crontab /app/app_cron
 
 
-mkdir -p /app/data/workspace
-mkdir -p /app/data/database
-touch /app/data/database/database.sqlite
+mkdir -p /etc/synchole/data/workspace
+mkdir -p /etc/synchole/data/database
+mkdir -p /etc/synchole/portainer
+touch /etc/synchole/data/database/database.sqlite
 
-sudo chown synchole:www-data /app/data
-sudo chown synchole:www-data /app/data/database/database.sqlite
-sudo chown synchole:www-data /app/data/database
-sudo chmod 775 /app/data/database
-sudo chmod 664 /app/data/database/database.sqlite
+sudo chown synchole:www-data /etc/synchole/data
+sudo chown synchole:www-data /etc/synchole/data/database/database.sqlite
+sudo chown synchole:www-data /etc/synchole/data/database
+sudo chmod 775 /etc/synchole/data/database
+sudo chmod 664 /etc/synchole/data/database/database.sqlite
 php artisan migrate --force
 
 

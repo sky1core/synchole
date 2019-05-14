@@ -50,12 +50,12 @@ return [
 
         'workspace' => [
             'driver' => 'local',
-            'root' => '/app/data/workspace',
+            'root' => '/etc/synchole/data/workspace',
         ],
 
         'data' => [
             'driver' => 'local',
-            'root' => '/app/data',
+            'root' => '/etc/synchole/data',
         ],
 
         'public' => [
