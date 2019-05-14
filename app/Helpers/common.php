@@ -79,3 +79,9 @@ if(! function_exists('bool_str')) {
     }
 }
 
+if(! function_exists('kebab_strict')) {
+    function kebab_strict($value) {
+        return \Illuminate\Support\Str::kebab(str_replace("_", "-", $value));
+    }
+}
+

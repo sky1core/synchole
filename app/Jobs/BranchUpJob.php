@@ -52,11 +52,11 @@ class BranchUpJob implements ShouldQueue
         $mainDomain = config('synchole.main_domain');
 
 
-        $branchDomain = Str::kebab($this->repo).'.'.$mainDomain;
+        $branchDomain = kebab_strict($this->repo).'.'.$mainDomain;
 
         if(! $app->data()->repo()->isDefaultBranch($this->branch)) {
 
-            $branchDomain = str::kebab($this->branch).'-'.$branchDomain;
+            $branchDomain = kebab_strict($this->branch).'-'.$branchDomain;
         }
 
 
@@ -96,7 +96,7 @@ class BranchUpJob implements ShouldQueue
             $service['labels'][] = 'github.repo='.$this->repo;
             $service['labels'][] = 'github.branch='.$this->branch;
 
-            $identifier = Str::kebab(sprintf("%s-%s-%s", $this->repo, $this->branch, $serviceName));
+            $identifier = kebab_strict(sprintf("%s-%s-%s", $this->repo, $this->branch, $serviceName));
             $identifiers[] = $identifier;
 
             $labels = new Labels($service['deploy']['labels']);
