@@ -90,6 +90,8 @@ class BranchPullJob implements ShouldQueue
             $sh->git('checkout -f', $this->headSha);
         }
 
+        $sh->git('submodule init');
+        $sh->git('submodule update');
 
         if($this->baseRef) {
             $sh->git('merge --no-edit', $this->baseRef);
