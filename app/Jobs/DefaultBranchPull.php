@@ -50,5 +50,7 @@ class DefaultBranchPull implements ShouldQueue
         $sh->git('fetch --all');
         $sh->git('checkout -f', $app->data()->repo()->defaultBranch());
         $sh->git('pull');
+        $sh->git('submodule init');
+        $sh->git('submodule update');
     }
 }
