@@ -20,6 +20,11 @@ class ShellProcessInfo
         return trim($this->output);
     }
 
+    public function outputLines()
+    {
+        return explode_trim("\n", $this->output);
+    }
+
     public function __toString()
     {
         return json_encode($this);
