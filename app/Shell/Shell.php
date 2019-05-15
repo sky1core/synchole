@@ -11,13 +11,13 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
  * Class Shell
  * @package App\Shell
  *
- * @method Shell mkdir(...$args)
- * @method Shell pwd(...$args)
- * @method Shell ls(...$args)
- * @method Shell cp(...$args)
- * @method Shell rm(...$args)
- * @method Shell whoami(...$args)
- * @method Shell git(...$args)
+ * @method ShellProcessInfo mkdir(...$args)
+ * @method ShellProcessInfo pwd(...$args)
+ * @method ShellProcessInfo ls(...$args)
+ * @method ShellProcessInfo cp(...$args)
+ * @method ShellProcessInfo rm(...$args)
+ * @method ShellProcessInfo whoami(...$args)
+ * @method ShellProcessInfo git(...$args)
  */
 class Shell
 {
