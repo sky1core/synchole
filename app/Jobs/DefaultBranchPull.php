@@ -39,7 +39,7 @@ class DefaultBranchPull implements ShouldQueue
         $sh->mkdir('-p', $path);
         $sh->setDir($path);
 
-        $cloneUrl = $app->data()->clone_url();
+        $cloneUrl = $app->data()->clone_url_with_access_token();
         if(! $app->defaultWorkspaceExists()) {
             $sh->git('clone', $cloneUrl, '.');
         }
@@ -50,7 +50,18 @@ class DefaultBranchPull implements ShouldQueue
         $sh->git('fetch --all');
         $sh->git('checkout -f', $app->data()->repo()->defaultBranch());
         $sh->git('pull');
-        $sh->git('submodule init');
-        $sh->git('submodule update');
+
+        if(\File::exists($path.'/.gitmodules')) {
+            $sh->git('submodule init');
+            $submodules = $sh->git('config --file .gitmodules --get-regexp url')->outputLines();
+
+            foreach ($submodules as $submodule) {
+                list($key, $url) = explode(' ', $submodule);
+                $url = $app->data()->submodule_url_with_access_token($url);
+
+                $sh->git('config', $key, $url);
+            }
+            $sh->git('submodule update');
+        }
     }
 }

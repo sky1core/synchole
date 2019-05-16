@@ -47,9 +47,16 @@ class GitHubAppRepoData extends GitHubAppBase
         return $this->username.'/'.$this->repo;
     }
 
-    public function clone_url()
+    public function clone_url_with_access_token()
     {
         $access_token = $this->data->access_token();
-        return sprintf("https://x-access-token:%s@github.com/%s.git", $access_token, $this->repo_full_name());
+        $pure_url = sprintf('https://github.com/%s.git', $this->repo_full_name());
+        return GitHubAppHelper::makeGitHubUrlWithAccessToken($pure_url, $access_token);
+    }
+
+    public function submodule_url_with_access_token($submodule_url)
+    {
+        $access_token = $this->data->access_token();
+        return GitHubAppHelper::makeGitHubUrlWithAccessToken($submodule_url, $access_token);
     }
 }

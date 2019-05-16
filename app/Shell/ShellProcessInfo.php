@@ -22,7 +22,7 @@ class ShellProcessInfo
 
     public function outputLines()
     {
-        return explode_trim("\n", $this->output);
+        return explode_trim("\n", rtrim($this->output));
     }
 
     public function __toString()

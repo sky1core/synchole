@@ -59,7 +59,7 @@ class BranchPullJob implements ShouldQueue
             dispatch_now(new DefaultBranchPull($this->repo));
         }
 
-        $cloneUrl = $app->data()->clone_url();
+        $cloneUrl = $app->data()->clone_url_with_access_token();
 
         $alredyExists = \File::exists($path.'/.git');
         if(! $alredyExists) {
@@ -90,8 +90,18 @@ class BranchPullJob implements ShouldQueue
             $sh->git('checkout -f', $this->headSha);
         }
 
-        $sh->git('submodule init');
-        $sh->git('submodule update');
+        if(\File::exists($path.'/.gitmodules')) {
+            $sh->git('submodule init');
+            $submodules = $sh->git('config --file .gitmodules --get-regexp url')->outputLines();
+
+            foreach ($submodules as $submodule) {
+                list($key, $url) = explode(' ', $submodule);
+                $url = $app->data()->submodule_url_with_access_token($url);
+
+                $sh->git('config', $key, $url);
+            }
+            $sh->git('submodule update');
+        }
 
         if($this->baseRef) {
             $sh->git('merge --no-edit', $this->baseRef);
