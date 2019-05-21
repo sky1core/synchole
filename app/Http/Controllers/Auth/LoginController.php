@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
 
@@ -115,6 +116,15 @@ class LoginController extends Controller
         $next = data_get($state, 'next');
         $type = data_get($state, 'type');
         $level = data_get($state, 'level');
+        $callback = data_get($state, 'callback');
+
+        if($type == 'agent') {
+            $domain = Str::before(Str::after($callback, '://'), '/');
+            if(! Str::endsWith($domain, '.'.config('synchole.main_domain'))) {
+                throw new \Exception('invalid domain');
+            }
+            return redirect($callback.'?'.$request->getQueryString());
+        }
 
         /** @var GoogleProvider $driver */
         $driver = Socialite::driver('google');
