@@ -23,6 +23,7 @@ services:
 @endif
 @if($USE_HTTPS)
       - "--entryPoints=Name:https Address::443 TLS"
+@if($AUTO_SSL)
       - "--acme"
       - "--acme.acmeLogging=true"
       - "--acme.email={{$EMAIL}}"
@@ -34,6 +35,7 @@ services:
       - "--acme.httpChallenge.entryPoint=http"
 @if($ACME_CA_SERVER)
       - "--acme.caServer={{$ACME_CA_SERVER}}"
+@endif
 @endif
 @endif
       - "--retry"

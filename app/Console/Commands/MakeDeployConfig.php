@@ -47,6 +47,7 @@ class MakeDeployConfig extends Command
             ->with('PROTOCOLS', $protocols)
             ->with('USE_HTTP', $http)
             ->with('USE_HTTPS', $https)
+            ->with('AUTO_SSL', env('AUTO_SSL', false))
             ->with('REDIRECT_TO_HTTPS', env('REDIRECT_TO_HTTPS', false))
             ->with('MAIN_DOMAIN', env('MAIN_DOMAIN', 'localhost'))
             ->with('USE_GOOGLE_AUTH', env('USE_GOOGLE_AUTH', false))

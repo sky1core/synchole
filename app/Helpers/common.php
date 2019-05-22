@@ -61,6 +61,7 @@ if(! function_exists('generate_app_url')) {
 
         $protocols = env('PROTOCOLS');
         $https = in_array("https", explode_trim(",", $protocols));
+        $https = $https || env('REDIRECT_TO_HTTPS');
         $protocol = $https ? 'https' : 'http';
         $app_url = $protocol.'://'.env('MAIN_DOMAIN');
         return $app_url;
