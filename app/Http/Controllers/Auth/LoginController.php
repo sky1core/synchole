@@ -52,15 +52,18 @@ class LoginController extends Controller
     {
         $header = $request->headers;
 
-        $proto = $header->get('X-Forwarded-Proto');
-        $host = $header->get('X-Forwarded-Host');
         $port = $header->get('X-Forwarded-Port', 80);
+        $proto = $header->get('X-Forwarded-Proto');
+        if($port == 443) {
+            $proto = 'https';
+        }
+        $host = $header->get('X-Forwarded-Host');
         $uri = $header->get('X-Forwarded-Uri', '/');
 
         $next = sprintf("%s://%s%s%s",
             $proto,
             $host,
-            ($port == 80) ? '' : ':'.$port,
+            ($port == 80 || $port == 443) ? '' : ':'.$port,
             ($uri == '/') ? '' : $uri
         );
 
@@ -123,6 +126,7 @@ class LoginController extends Controller
             if(! Str::endsWith($domain, '.'.config('synchole.main_domain'))) {
                 throw new \Exception('invalid domain');
             }
+            \Log::debug('agent callback: '. $callback);
             return redirect($callback.'?'.$request->getQueryString());
         }
 
